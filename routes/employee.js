@@ -42,37 +42,38 @@ router.get('/find/:id', async(req, res) => {
 // create employee
 router.post('/add', async(req, res) => {
     try{
-        // const {name} = req.body;
-        // if(!name){
-        //     return res.status(400).json({"status": "error", "msg": "All fields are required.."})
-        // }
-
-        const empDetails = {
-            name: "test2",
-            job_title: "Jobless2",
-            phone: "1234567890",
-            email: "jobdedo@gmail.com",
-            address: "xyz", 
-            city: "xyz", 
-            state: "xyz"
+        
+        const {empDetails, contacts} = req.body;
+        if(!(empDetails && contacts)){
+            return res.status(400).json({"status": "error", "msg": "All fields are required.."});
         }
-        const contacts = [
-            {
-                name: "name1",
-                phone: "0987654321",
-                relation: "anjaaan"
-            },
-            {
-                name: "name2",
-                phone: "0987654321",
-                relation: "anjaaan"
-            },
-            {
-                name: "name3",
-                phone: "0987654321",
-                relation: "anjaaan"
-            }
-        ]
+
+        // const empDetails = {
+        //     name: "test2",
+        //     job_title: "Jobless2",
+        //     phone: "1234567890",
+        //     email: "jobless@gmail.com",
+        //     address: "xyz", 
+        //     city: "xyz", 
+        //     state: "xyz"
+        // }
+        // const contacts = [
+        //     {
+        //         name: "name1",
+        //         phone: "0987654321",
+        //         relation: "anjaaan"
+        //     },
+        //     {
+        //         name: "name2",
+        //         phone: "0987654321",
+        //         relation: "anjaaan"
+        //     },
+        //     {
+        //         name: "name3",
+        //         phone: "0987654321",
+        //         relation: "anjaaan"
+        //     }
+        // ]
 
         const result = await createRow(empDetails, contacts);
         res.status(200).json({status: 'successful', msg: result});
