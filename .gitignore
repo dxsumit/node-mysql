@@ -1,0 +1,16 @@
+# dependencies
+/node_modules
+
+# todo files.
+TODO
+
+# testing
+/coverage
+
+# production
+/build
+
+.env
+
+
+
