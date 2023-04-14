@@ -1,5 +1,6 @@
 
 const router = require("express").Router();
+const {check, validationResult} = require("express-validator");
 
 const {getAllRows, getRow, createRow, updateRow, deleteRow} = require('../DB/connect');
 
@@ -40,22 +41,33 @@ router.get('/find/:id', async(req, res) => {
 
 
 // create employee
-router.post('/add', async(req, res) => {
+router.post('/add', [
+    check('empDetails.email', "Email is not valid").isEmail(),
+    check('empDetails.name', "name can't be empty").notEmpty(),
+    check('empDetails.job_title', "job can't be empty").notEmpty(),
+    check('empDetails.phone', "Length should be 10").isLength({min: 10, max:10})
+], async(req, res) => {
+
     try{
+
+        // throw the res, based on validation 
+        validationResult(req).throw();
         
         const {empDetails, contacts} = req.body;
         if(!(empDetails && contacts)){
             return res.status(400).json({"status": "error", "msg": "All fields are required.."});
         }
 
+        // input format...
+
         // const empDetails = {
-        //     name: "test2",
-        //     job_title: "Jobless2",
-        //     phone: "1234567890",
-        //     email: "jobless@gmail.com",
-        //     address: "xyz", 
-        //     city: "xyz", 
-        //     state: "xyz"
+            // name: "test2",
+            // job_title: "Jobless2",
+            // phone: "1234567890",
+            // email: "jobless@gmail.com",
+            // address: "xyz", 
+            // city: "xyz", 
+            // state: "xyz"
         // }
         // const contacts = [
         //     {
@@ -68,11 +80,11 @@ router.post('/add', async(req, res) => {
         //         phone: "0987654321",
         //         relation: "anjaaan"
         //     },
-        //     {
-        //         name: "name3",
-        //         phone: "0987654321",
-        //         relation: "anjaaan"
-        //     }
+            // {
+            //     name: "name3",
+            //     phone: "0987654321",
+            //     relation: "anjaaan"
+            // }
         // ]
 
         const result = await createRow(empDetails, contacts);
@@ -91,7 +103,7 @@ router.patch('/update/:empID', async(req, res) => {
         const {empUpdate, relUpdate} = req.body;
         let relID = undefined;
 
-        // do some computation like how many fiels have been passed..
+        // do some computation like how many fields have been passed..
         if(!(empUpdate || relUpdate))
             return res.status(400).json({"status": "error", "msg": "Atleast 1 field is required.."});
        

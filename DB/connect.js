@@ -115,8 +115,11 @@ const updateRow = async (empID, empUpdate, relID, relUpdate) => {
     if(empUpdate){
         
         for(let each in empUpdate){
-            text += each + "=?, "
+            if(empUpdate[each].length == 0){
+                continue;
+            }
             values.push(empUpdate[each])
+            text += each + "=?, "
         }
 
         text = text.slice(0, text.length-2)
@@ -131,6 +134,9 @@ const updateRow = async (empID, empUpdate, relID, relUpdate) => {
         values = [];
 
         for(let each in relUpdate){
+            if(relUpdate[each].length == 0){
+                continue;
+            }
             text += each + "=?, "
             values.push(relUpdate[each])
         }
