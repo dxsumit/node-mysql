@@ -84,14 +84,23 @@ router.post('/add', async(req, res) => {
 })
 
 // update an employee
-router.patch('/update/:id', async(req, res) => {
+router.patch('/update/:empID', async(req, res) => {
     try{
-        const {id} = req.params
-        const {name} = req.body;
+        const {empID} = req.params
+        const {empUpdate, relUpdate} = req.body;
+        let relID = undefined;
 
         // do some computation like how many fiels have been passed..
+        if(!(empUpdate || relUpdate))
+            return res.status(400).json({"status": "error", "msg": "Atleast 1 field is required.."});
+       
 
-        const result = await updateRow(id, name);
+        if(relUpdate){
+            relID = relUpdate.relID;
+            delete relUpdate.relID;
+        }
+
+        const result = await updateRow(empID, empUpdate, relID, relUpdate);
         res.status(200).json({status: 'successful', msg: result});
 
     }
@@ -99,6 +108,7 @@ router.patch('/update/:id', async(req, res) => {
         res.status(500).json({status: 'failed', msg: err});
     }
 })
+
 
 // delete an employee..
 router.delete('/delete/:id', async(req, res) => {

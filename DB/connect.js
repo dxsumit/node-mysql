@@ -104,14 +104,52 @@ const createRow = async (empDetails, contacts) => {
 // })
 
 
-const updateRow = async (id, name) => {
-    const QUERY = `UPDATE test SET name=? WHERE id=?`;
-    const res = await pool.query(QUERY, [name, id])
+// empUpdate and relUpdate are object with parameters to update...
+const updateRow = async (empID, empUpdate, relID, relUpdate) => {
+    
+    let QUERY, emp, rel, totalRows = 0;
+    let text = "";
+    let values = [];
+
+    // update the employee details..
+    if(empUpdate){
+        
+        for(let each in empUpdate){
+            text += each + "=?, "
+            values.push(empUpdate[each])
+        }
+
+        text = text.slice(0, text.length-2)
+        totalRows += values.length
+        values.push(empID)
+        QUERY = `UPDATE employee SET ${text} WHERE empID=?`
+        emp = await pool.query(QUERY, values)
+    }
+
+    if(relID){
+        text = "";
+        values = [];
+
+        for(let each in relUpdate){
+            text += each + "=?, "
+            values.push(relUpdate[each])
+        }
+
+        text = text.slice(0, text.length-2)
+        totalRows += values.length
+        values.push(relID)
+
+        QUERY = `UPDATE relatives SET ${text} WHERE relativeID=?`
+
+        rel = await pool.query(QUERY, values)
+    }
+
     return {
-        id: id,
-        name: name,
-        message: `total ${res[0].affectedRows} rows affected..`
-    };
+        id: empID,
+        message: `total ${totalRows} items affected..`
+
+    }
+
 }
 
 // updateRow(4, "fuck")
