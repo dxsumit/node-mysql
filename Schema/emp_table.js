@@ -25,10 +25,7 @@ CREATE TABLE IF NOT EXISTS relatives (
 
 
 
-
+// examples...
 INSERT INTO employee (name, job_title, phone, email, address, city, state) VALUES ("sumit", "admin", "1234567890", "admin@gmail.com", "xyz", "xyz", "TN");
 
-
 INSERT INTO relatives (name, phone, relation, empID) VALUES ("relative", "1234567890", "unknown", 1);
-
-

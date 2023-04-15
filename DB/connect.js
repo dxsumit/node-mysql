@@ -1,5 +1,3 @@
-
-
 const mysql = require("mysql2");
 require("dotenv").config();
 
@@ -10,23 +8,16 @@ let pool = mysql.createPool({
     database: process.env.DATABASE
 }).promise();
 
+// get rows of table based on startindex and number of rows
+const getAllRows = async (startIndex, count) => {
+    const QUERY = `SELECT * FROM employee LIMIT ?, ?`;
+    const values = [startIndex, count];
 
-
-const getAllRows = async () => {
-    const res = await pool.query("SELECT * FROM employee");
+    const res = await pool.query(QUERY, values);
     return res[0]
 }
 
-// getAllRows()
-// .then( (res) => {
-    
-//     console.log(res);
-// })
-// .catch( (err) => {
-//     console.log("error in accessing data..");
-// })
-
-
+// get 1 row the table... in this case employee and all his relatives will be returned...
 const getRow = async (id) => {
     let QUERY = `SELECT * FROM employee WHERE empID=?`;
     const emp = await pool.query(QUERY, [id])
@@ -41,18 +32,8 @@ const getRow = async (id) => {
     }
 }
 
-// getRow(2)
-// .then( (res) => {
-//     console.log(res);
-// })
-// .catch( (err) => {
-//     console.log(err);
-// })
-
-
 // empDetails is a object, contacts is an array of objects.. 
 const createRow = async (empDetails, contacts) => {
-
     let QUERY = `INSERT INTO employee (
         name, 
         job_title, 
@@ -71,10 +52,8 @@ const createRow = async (empDetails, contacts) => {
                     empDetails.city, 
                     empDetails.state ]
 
-
     const emp = await pool.query(QUERY, values)
     const id = emp[0].insertId;
-
 
     for(let each of contacts){
         QUERY = `INSERT INTO relatives (
@@ -91,18 +70,7 @@ const createRow = async (empDetails, contacts) => {
         empID: id,
         message: `employee ${empDetails.name} added with total ${contacts.length} contacts.`
     }
-
 }
-
-
-// createRow("Mohan")
-// .then( (res) => {
-//     console.log(res);
-// })
-// .catch( (err) => {
-//     throw(err);
-// })
-
 
 // empUpdate and relUpdate are object with parameters to update...
 const updateRow = async (empID, empUpdate, relID, relUpdate) => {
@@ -113,7 +81,6 @@ const updateRow = async (empID, empUpdate, relID, relUpdate) => {
 
     // update the employee details..
     if(empUpdate){
-        
         for(let each in empUpdate){
             if(empUpdate[each].length == 0){
                 continue;
@@ -132,7 +99,6 @@ const updateRow = async (empID, empUpdate, relID, relUpdate) => {
     if(relID){
         text = "";
         values = [];
-
         for(let each in relUpdate){
             if(relUpdate[each].length == 0){
                 continue;
@@ -146,27 +112,16 @@ const updateRow = async (empID, empUpdate, relID, relUpdate) => {
         values.push(relID)
 
         QUERY = `UPDATE relatives SET ${text} WHERE relativeID=?`
-
         rel = await pool.query(QUERY, values)
     }
 
     return {
         id: empID,
         message: `total ${totalRows} items affected..`
-
     }
-
 }
 
-// updateRow(4, "fuck")
-// .then( (res) => {
-//     console.log(res);
-// })
-// .catch( (err) => {
-//     throw(err);
-// })
-
-
+// delete a row of table based on ID, in this case employee and all his relatives will be deleted..
 const deleteRow = async (id) => {
     let QUERY = `DELETE FROM relatives WHERE empID=?`;
     const rel = await pool.query(QUERY, [id])
@@ -178,18 +133,6 @@ const deleteRow = async (id) => {
         message: `total ${rel[0].affectedRows} relatives and ${emp[0].affectedRows} employee deleted.`
     };
 }
-
-// deleteRow(4)
-// .then( (res) => {
-//     console.log(res);
-// })
-// .catch( (err) => {
-//     throw(err);
-// })
-
-
-
-
 
 module.exports = {getAllRows, getRow, createRow, updateRow, deleteRow}
 

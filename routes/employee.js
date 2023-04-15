@@ -8,21 +8,23 @@ router.get('/', (req, res) => {
     res.status(200).json({status: "success", msg: "This is employee api."});
 })
 
-
 // read employess..
 router.get('/get', async(req, res) => {
     
     try {
-        const result = await getAllRows();
+        const page = req.query.page || 1;
+        const count = parseInt(req.query.count || 5);
+        const startIndex = (page-1) * count;
+
+        const result = await getAllRows(startIndex, count);
         res.status(200).json({status: 'successful', msg: result});
     }
     catch(err){
         res.status(500).json({status: 'failed', msg: err});
     }
-
 })
 
-// find employee..
+// find employee and all his relatives...
 router.get('/find/:id', async(req, res) => {
     
     try {
@@ -49,7 +51,6 @@ router.post('/add', [
 ], async(req, res) => {
 
     try{
-
         // throw the res, based on validation 
         validationResult(req).throw();
         
@@ -106,13 +107,11 @@ router.patch('/update/:empID', async(req, res) => {
         // do some computation like how many fields have been passed..
         if(!(empUpdate || relUpdate))
             return res.status(400).json({"status": "error", "msg": "Atleast 1 field is required.."});
-       
 
         if(relUpdate){
             relID = relUpdate.relID;
             delete relUpdate.relID;
         }
-
         const result = await updateRow(empID, empUpdate, relID, relUpdate);
         res.status(200).json({status: 'successful', msg: result});
 
@@ -121,7 +120,6 @@ router.patch('/update/:empID', async(req, res) => {
         res.status(500).json({status: 'failed', msg: err});
     }
 })
-
 
 // delete an employee..
 router.delete('/delete/:id', async(req, res) => {
@@ -135,7 +133,6 @@ router.delete('/delete/:id', async(req, res) => {
         res.status(500).json({status: 'failed', msg: err});
     }
 })
-
 
 
 module.exports = router;
