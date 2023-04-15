@@ -1,5 +1,3 @@
-# node-mysql
-
 ## REST API for Management of Employees and their Contacts.
 To run the project locally 
 <ul>
@@ -115,6 +113,7 @@ We can pass only those fields which need to be updated leaving rest of them as i
 
 ### Delete Employee with all his relatives contacts [DELETE Method]
 For deleting an Employee, we need to pass the id of the employee as a parameter, based on that employee and his contacts will be deleted. 
+
 <a href="#"> http://localhost:4000/api/employee/delete/:id </a> <br>
 
 
