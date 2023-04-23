@@ -61,7 +61,7 @@ By default, each request will serve 5 items per page but that can be updated by 
 Request will return only details of the employees not relatives details since each employee doesn’t have fixed number of contacts, its redundant to return them in same request. [Full details can be accessed in other type of request] 
 
 ### Find the Employee [GET Method]
-<a href="#"> http://localhost:4000/api/employee/find/:/id </a> <br>
+<a href="#"> http://localhost:4000/api/employee/find/:id </a> <br>
 
 To get the entire details of an employee including personal and relatives details we can use this.
 We need to pass the empID of the employee whom details we want to fetch, empID can be passed as a parameter.
